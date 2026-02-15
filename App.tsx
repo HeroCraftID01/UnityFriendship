@@ -6,6 +6,7 @@ import HistoryPage from './components/HistoryPage';
 import AnalysisResultModal from './components/AnalysisResultModal';
 import { AnalysisType, User, AnalysisResult, ViewType, HistoryItem } from './types';
 import { startAnalysis } from './services/geminiService';
+import { saveAnalysisToDB, fetchHistoryFromDB } from './services/supabaseService';
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -14,6 +15,7 @@ const App: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
   const currentUser: User = {
     name: 'Budi Santoso',
@@ -29,6 +31,21 @@ const App: React.FC = () => {
     }
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const loadHistory = async () => {
+      setIsLoadingHistory(true);
+      try {
+        const data = await fetchHistoryFromDB();
+        setHistory(data);
+      } catch (err) {
+        console.error('Failed to load history:', err);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+    loadHistory();
+  }, []);
+
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   const handleStartAnalysis = async () => {
@@ -40,27 +57,27 @@ const App: React.FC = () => {
     setIsAnalyzing(true);
     try {
       const result = await startAnalysis(selectedAnalysis as AnalysisType);
-      setAnalysisResult(result);
       
-      // Add to history
-      const newHistoryItem: HistoryItem = {
-        id: Date.now().toString(),
-        title: result.title,
-        type: selectedAnalysis as AnalysisType,
-        date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
-        result: result
-      };
-      setHistory(prev => [newHistoryItem, ...prev]);
+      // Creating a descriptive title like the one in user's screenshot
+      const dbTitle = `${selectedAnalysis} grup MetroStudio`;
+      
+      await saveAnalysisToDB(dbTitle, selectedAnalysis as AnalysisType, result);
+      
+      setAnalysisResult({ ...result, title: dbTitle });
+      
+      const updatedHistory = await fetchHistoryFromDB();
+      setHistory(updatedHistory);
+      
     } catch (error) {
-      console.error('Analysis failed:', error);
-      alert('Gagal melakukan analisa. Silakan coba lagi.');
+      console.error('Analysis or Save failed:', error);
+      alert('Gagal memproses analisa. Pastikan tabel "conversations" tersedia di Supabase.');
     } finally {
       setIsAnalyzing(false);
     }
   };
 
   const handleViewHistoryItem = (item: HistoryItem) => {
-    setAnalysisResult(item.result);
+    setAnalysisResult({ ...item.result, title: item.title });
   };
 
   return (
@@ -72,7 +89,6 @@ const App: React.FC = () => {
       />
       
       <div className="flex-1 relative flex flex-col overflow-hidden">
-        {/* Top Controls */}
         <div className="absolute top-4 right-4 z-50 flex space-x-2">
           <button 
             onClick={toggleDarkMode}
@@ -95,7 +111,8 @@ const App: React.FC = () => {
         ) : (
           <HistoryPage 
             history={history} 
-            onViewItem={handleViewHistoryItem} 
+            onViewItem={handleViewHistoryItem}
+            isLoading={isLoadingHistory}
           />
         )}
       </div>

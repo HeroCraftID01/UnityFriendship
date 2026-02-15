@@ -5,23 +5,29 @@ export enum AnalysisType {
   CONFLICT = 'Prediksi Konflik',
 }
 
+export interface RecommendedAction {
+  action: string;
+}
+
+export interface Analytics {
+  "environment-score": number;
+  "person-behaviour": string;
+  "danger-chat": string;
+}
+
+export interface AnalysisResult {
+  title?: string; // Local helper for UI display
+  "executive-summary": string;
+  analytics: Analytics;
+  "recommended-action": RecommendedAction[];
+}
+
 export interface HistoryItem {
   id: string;
   title: string;
   type: AnalysisType;
   date: string;
   result: AnalysisResult;
-}
-
-export interface AnalysisResult {
-  title: string;
-  summary: string;
-  recommendations: string[];
-  metrics: {
-    label: string;
-    value: string;
-    trend: 'up' | 'down' | 'stable';
-  }[];
 }
 
 export interface User {
