@@ -68,8 +68,8 @@ const AnalysisResultModal: React.FC<AnalysisResultModalProps> = ({ result, onClo
               <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700/50">
                 <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Perilaku Personal</p>
                 <div className="flex items-center space-x-2">
-                  <span className={`material-symbols-outlined ${analytics["person-behaviour"].toLowerCase().includes('good') ? 'text-green-500' : 'text-red-500'}`}>
-                    {analytics["person-behaviour"].toLowerCase().includes('good') ? 'check_circle' : 'warning'}
+                  <span className={`material-symbols-outlined ${analytics["person-behaviour"].includes('Good') ? 'text-green-500' : 'text-red-500'}`}>
+                    {analytics["person-behaviour"].includes('Good') ? 'check_circle' : 'warning'}
                   </span>
                   <span className="text-lg font-bold text-gray-900 dark:text-white">{analytics["person-behaviour"]}</span>
                 </div>
@@ -82,7 +82,7 @@ const AnalysisResultModal: React.FC<AnalysisResultModalProps> = ({ result, onClo
                 <p className="text-[10px] uppercase font-bold tracking-widest">Analisa Bahaya (Danger Analysis)</p>
               </div>
               <p className="text-gray-700 dark:text-gray-300 text-sm italic whitespace-pre-wrap">
-                "{analytics["danger-chat"]}"
+                "{analytics["danger-chat"] === "-"? "Tidak Ada Chat Berbahaya / Melanggar Norma Hukum" : analytics["danger-chat"]}"
               </p>
             </div>
           </section>

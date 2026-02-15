@@ -22,14 +22,14 @@ const MainContent: React.FC<MainContentProps> = ({
       {/* Hero Section */}
       <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-          Halo, {userName.split(' ')[0]}. Apa yang ingin Anda analisa hari ini?
+          Halo, {userName.split(' ')[0]}. Apa yang ingin anda analisa hari ini?
         </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
           Silakan pilih jenis pemeriksaan analisa dari daftar di bawah.
         </p>
       </div>
 
-      {/* Selection Box */}
+      {/* Selection Box
       <div className="w-full max-w-lg mb-16 space-y-4">
         <div>
           <label className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-widest" htmlFor="analysis-type">
@@ -76,7 +76,6 @@ const MainContent: React.FC<MainContentProps> = ({
         </button>
       </div>
 
-      {/* Stats Summary */}
       <div className="w-full animate-in fade-in zoom-in-95 duration-1000 delay-300">
         <h4 className="text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-gray-500 font-bold mb-5 text-center">
           Ringkasan Status Terakhir
@@ -101,7 +100,7 @@ const MainContent: React.FC<MainContentProps> = ({
             colorClass="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400"
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
